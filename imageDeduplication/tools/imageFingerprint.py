@@ -20,12 +20,14 @@ class HashCode:
     success: bool
     value: ImageHash | None = None
     error: str | None = None
-    img_path: str | None = None
+    img_path: Path | None = None
 
     def __sub__(self, other: 'HashCode') -> int:
         """重载减法：计算两个哈希的汉明距离"""
         if not isinstance(other, HashCode):
             return NotImplemented
+        if self.value is None or other.value is None:
+            raise ValueError("HashCode object is None")
         return self.value - other.value
     
     def __repr__(self):
@@ -75,13 +77,15 @@ def get_phash(image: str | Path | Image.Image, hash_size: int = 8) -> HashCode:
         >>> print(phash2)
     """
 
+    img_path = None
     try:
-        img_path = None
         if isinstance(image, (str, Path)):
             img_path = Path(image)
             pil_image = Image.open(image).convert('RGB')
         elif isinstance(image, Image.Image):
             pil_image = image.convert('RGB')
+        else:
+            raise TypeError("image must be str, Path or Image.Image")
         pil_image.load()
     except Exception as e:
         return HashCode(False, error=str(e), img_path=img_path)

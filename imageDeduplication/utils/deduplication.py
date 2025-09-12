@@ -22,6 +22,9 @@ from imageDeduplication.tools import get_phash, HashCode
 
 
 IMG_EXT = ['.jpg', '.jpeg', '.png', '.gif', '.bmp']
+cpu_count = os.cpu_count()
+cpu_count = cpu_count if cpu_count is not None else 4
+MAX_WORKERS = max(4, cpu_count // 2)
 
 
 class DedupPipelineBase:
@@ -37,7 +40,9 @@ class DedupPipelineBase:
         dst_dir.mkdir(exist_ok=True, parents=True)
 
         def con_save(hash_code: HashCode):
-            img_path = hash_code.img_path  # type: Path
+            if hash_code.img_path is None:
+                raise ValueError("HashCode object has no img_path attribute.")
+            img_path = Path(hash_code.img_path)  # type: Path
             dst_path = dst_dir / img_path.name
             if dst_path.exists():
                 # 文件存在，添加时间戳信息
@@ -45,7 +50,7 @@ class DedupPipelineBase:
             # 复制文件
             dst_path.symlink_to(img_path) if use_link else shutil.copy2(img_path, dst_path)
         
-        with ThreadPoolExecutor(max_workers=max(4, os.cpu_count() // 2)) as executor:
+        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
             tql_res = [executor.submit(con_save, hash_code) for hash_code in saved_list]
             exec_bar = tqdm(
                 as_completed(tql_res), total=len(tql_res), desc='\033[94m\033[1mSaving Images\033[0m', 
@@ -78,7 +83,7 @@ class DedupPipelineBase:
         :return list[HashCode]: HashCode列表(排除错误对象)
         """
 
-        with ThreadPoolExecutor(max_workers=max(4, os.cpu_count() // 2)) as executor:
+        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
             tpl_res = [executor.submit(get_phash, img_file, hash_size) for img_file in img_files]
             exec_bar = tqdm(
                 as_completed(tpl_res), total=len(tpl_res), desc='\033[94m\033[1mLoading HashCodes\033[0m', 
@@ -245,8 +250,7 @@ class MultiDeduplication(DedupPipelineBase):
 
             # 从文件夹加载图像的HashCode列表
             if target.is_dir():
-                target_imgs = cls.load_items(target)
-                target_hash_codes = cls.load_hash_codes(target_imgs, hash_size=hash_size)  # type: list[HashCode]
+                target_hash_codes = cls.load_items(target, hash_size=hash_size)  # type: list[HashCode]
                 res.append(target_hash_codes)
             # 从json文件加载图像的HashCode列表
             else:
@@ -258,7 +262,7 @@ class MultiDeduplication(DedupPipelineBase):
                     HashCode(
                         True, 
                         value=imagehash.hex_to_hash(json_dict['value']), 
-                        img_path=json_dict.get('img_path', None)
+                        img_path=Path(json_dict.get('img_path'))
                     ) for json_dict in json_list
                 ])
         return res
@@ -290,11 +294,9 @@ class MultiDeduplication(DedupPipelineBase):
         check_hash_codes = self.load_items(self.src_dir, self.hash_size)  # type: list[HashCode]
         logger.info(f"Loading targets from {self.targets}.")
         targets_hash_lists = self.load_targets(self.targets, self.hash_size)
-        cpu_num = max(4, os.cpu_count() // 2)
-
         status = np.array([False] * len(check_hash_codes), dtype=bool)
 
-        with ProcessPoolExecutor(max_workers=cpu_num) as executor:
+        with ProcessPoolExecutor(max_workers=MAX_WORKERS) as executor:
             pp_exec_res = [executor.submit(self.similarity_check, check_hash_codes, target_hash_codes) for target_hash_codes in targets_hash_lists]
 
             try:
