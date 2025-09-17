@@ -24,8 +24,8 @@ version = { attr = "imageDeduplication.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["imageDeduplication"]
+include = ["imageDeduplication", "imageDeduplication.*"]
 
 [project.scripts]
 # 命令 = "包名.模块:函数"
-elfin = "imageDeduplication.scripts.elfinCli:elfin"
+dedupImg = "imageDeduplication.scripts.dedupCli:dedupImg"
