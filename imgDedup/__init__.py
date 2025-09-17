@@ -8,6 +8,6 @@
 @Desc    :   图像去重代码重构, from LiuGuDong
 '''
 
-from dedupImg.scripts.dedupCli import dedupImgCli
+from imgDedup.scripts.dedupCli import dedupImgCli
 
 __version__ = "1.0.0"

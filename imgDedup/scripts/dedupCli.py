@@ -14,7 +14,7 @@ ROOT = FILE.parents[1]  # project root directory
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 
-from dedupImg.utils.deduplication import SelfDeduplication, MultiDeduplication
+from imgDedup.utils.deduplication import SelfDeduplication, MultiDeduplication
 
 
 class DedupCli:

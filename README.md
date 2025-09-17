@@ -2,7 +2,7 @@
 
 图像去重
 > 项目地址：https://github.com/firstelfin/ImageDeduplication
-> PYPI地址：https://pypi.org/project/dedupImg/
+> PYPI地址：https://pypi.org/project/imgDedup/
 
 ## 自定义去重数据HashCode
 
@@ -10,13 +10,13 @@
 
 ## 去重核心算法-phash
 
-> 代码路径：`dedupImg/tools/imageFingerprint.py`
+> 代码路径：`imgDedup/tools/imageFingerprint.py`
 
 imageFingerprint:get_phash 基于`imagehash.phash`实现了感知哈希算法，计算图像的指纹。函数的输入可以是图像路径，也可以是图像ndarray。
 
 ## 去重管线1--单个数据集去重
 
-> 代码路径：`dedupImg/utils/deduplication.py`
+> 代码路径：`imgDedup/utils/deduplication.py`
 
 `deduplication:SelfDeduplication` 类实现了单个数据集的去重。去重逻辑是并发加载每个图片的HashCode, 然后初始化一个保存的空列表，循环这些HashCode，如果HashCode与列表中的HashCode都不相似，则将此HashCode加入列表。最后返回列表中的HashCode。
 
@@ -35,7 +35,7 @@ imageFingerprint:get_phash 基于`imagehash.phash`实现了感知哈希算法，
 
 ## 去重管线2--多个数据集去重
 
-> 代码路径：`dedupImg/utils/deduplication.py`
+> 代码路径：`imgDedup/utils/deduplication.py`
 
 `deduplication:CrossDatasetDeduplication` 类实现了多个数据集的去重。去重逻辑是并发加载每个数据集的图片的HashCode, 然后初始化一个保存的空列表，循环这些HashCode，如果HashCode与列表中的HashCode都不相似，则将此HashCode加入列表。最后返回列表中的HashCode。
 
@@ -72,5 +72,5 @@ imageFingerprint:get_phash 基于`imagehash.phash`实现了感知哈希算法，
 通过PYPI安装：
 
 ```shell
->>> pip install dedupImg
+>>> pip install imgDedup
 ```
