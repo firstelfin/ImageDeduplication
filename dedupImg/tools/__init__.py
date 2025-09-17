@@ -8,7 +8,7 @@
 @Desc    :   None
 '''
 
-from imageDeduplication.tools.imageFingerprint import get_phash, HashCode
+from dedupImg.tools.imageFingerprint import get_phash, HashCode
 
 
 __all__ = ['get_phash']

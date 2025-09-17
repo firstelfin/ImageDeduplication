@@ -5,6 +5,6 @@
 @Time    :   2025/09/09 14:55:23
 @Author  :   firstElfin 
 @Version :   0.0
-@Desc    :   imageDeduplication config file
+@Desc    :   dedupImg config file
 '''
 

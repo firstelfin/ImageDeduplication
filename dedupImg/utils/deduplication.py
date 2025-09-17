@@ -18,7 +18,7 @@ from pathlib import Path
 from tqdm import tqdm
 from loguru import logger
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
-from imageDeduplication.tools import get_phash, HashCode
+from dedupImg.tools import get_phash, HashCode
 
 
 IMG_EXT = ['.jpg', '.jpeg', '.png', '.gif', '.bmp']

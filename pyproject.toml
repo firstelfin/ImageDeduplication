@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 
-name = "imageDeduplication"
+name = "dedupImg"
 dynamic = ["version"]
 description = "图像去重工具包."
 readme = "README.md"
@@ -20,12 +20,12 @@ dependencies = [
 
 
 [tool.setuptools.dynamic]
-version = { attr = "imageDeduplication.__version__" }
+version = { attr = "dedupImg.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["imageDeduplication", "imageDeduplication.*"]
+include = ["dedupImg", "dedupImg.*"]
 
 [project.scripts]
 # 命令 = "包名.模块:函数"
-dedupImg = "imageDeduplication.scripts.dedupCli:dedupImg"
+dedupImg = "dedupImg.scripts.dedupCli:dedupImgCli"

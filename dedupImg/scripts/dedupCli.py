@@ -14,7 +14,7 @@ ROOT = FILE.parents[1]  # project root directory
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
 
-from imageDeduplication.utils.deduplication import SelfDeduplication, MultiDeduplication
+from dedupImg.utils.deduplication import SelfDeduplication, MultiDeduplication
 
 
 class DedupCli:
@@ -65,7 +65,7 @@ def set_args():
     return args
 
 
-def dedupImg():
+def dedupImgCli():
     print("Welcome to Image Deduplication Tools!")
     args = set_args()
     if args.sub == "self":
